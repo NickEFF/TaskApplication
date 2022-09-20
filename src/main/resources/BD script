@@ -1,0 +1,58 @@
+CREATE TABLE t_documents (
+    id                              SERIAL        NOT NULL
+   ,data_create                     TIMESTAMP     NOT NULL
+   ,s_code                          VARCHAR(10)   NOT NULL
+   ,r_code                          VARCHAR(10)   NOT NULL
+);
+
+ALTER TABLE t_documents                        ADD CONSTRAINT pk_documents PRIMARY KEY (id);
+
+INSERT INTO t_documents (data_create, s_code, r_code)
+VALUES (current_timestamp, 'FFK', 'JPK')
+
+SELECT * FROM t_documents
+
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+
+DROP table t_marks;
+
+CREATE TABLE t_details (
+    id_detail                       SERIAL        NOT NULL
+   ,line_number                     SERIAL       NOT NULL
+   ,product_name                    VARCHAR(100)  NOT NULL
+   ,id_doc                          INTEGER       NOT NULL
+);
+
+ALTER TABLE t_details                        ADD CONSTRAINT pk_details PRIMARY KEY (id_detail);
+ALTER TABLE t_details                        ADD CONSTRAINT fk_details_documents
+                                            FOREIGN KEY (id_doc)
+                                            REFERENCES t_documents ON DELETE CASCADE;
+
+INSERT INTO t_details (product_name, id_doc)
+VALUES ('hotdog', 2)
+
+SELECT * FROM t_details
+
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+
+DROP table t_marks;
+CREATE TABLE t_marks (
+    id_mark                       SERIAL       NOT NULL
+   ,id_detail                     INTEGER
+   ,id_doc                        INTEGER
+);
+
+ALTER TABLE t_marks                        ADD CONSTRAINT pk_marks PRIMARY KEY (id_mark);
+ALTER TABLE t_marks                        ADD CONSTRAINT fk_marks_details
+                                            FOREIGN KEY (id_detail)
+                                            REFERENCES t_details ON DELETE CASCADE;
+ALTER TABLE t_marks                        ADD CONSTRAINT fk_marks_documents
+                                            FOREIGN KEY (id_doc)
+                                            REFERENCES t_documents ON DELETE CASCADE;
+
+INSERT INTO t_marks (id_detail, id_doc)
+VALUES (null, null)
